@@ -2,8 +2,8 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retire in REAL - 退休規劃報告</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Retire in REAL - 退休規劃 (手機優化版)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
@@ -16,18 +16,71 @@
             --light-bg: #f4f6f9;
         }
 
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #eef1f5; color: var(--text-color); }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f0f2f5; color: var(--text-color); }
         h1, h2, h3, h4, h5 { font-family: 'Noto Serif TC', serif; }
         
-        /* === 螢幕顯示樣式 === */
-        .web-view-card { border: none; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); background: white; margin-bottom: 20px; }
-        .web-header { background: linear-gradient(135deg, var(--primary-color), #2a5298); color: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
-        .input-group-text { background-color: #e9ecef; }
-        .ref-badge { font-size: 0.75rem; color: #666; background-color: #fff3cd; padding: 2px 8px; border-radius: 4px; border: 1px solid #ffecb5; margin-top: 5px; display: inline-block; }
+        /* === 螢幕顯示樣式 (Web Interface) === */
+        .web-header { 
+            background: linear-gradient(135deg, var(--primary-color), #2a5298); 
+            color: white; 
+            padding: 25px 20px; 
+            border-radius: 0 0 20px 20px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
         
+        /* 卡片優化 */
+        .web-view-card { 
+            border: none; 
+            border-radius: 16px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+            background: white; 
+            margin-bottom: 20px; 
+            padding: 20px;
+        }
+
+        /* 浮動標籤樣式優化 (解決高低不一) */
+        .form-floating > .form-control { height: 60px; border-radius: 8px; border: 1px solid #e0e0e0; }
+        .form-floating > .form-select { height: 60px; border-radius: 8px; border: 1px solid #e0e0e0; }
+        .form-floating > label { padding-top: 0.8rem; font-size: 0.9rem; color: #888; }
+        .form-control:focus { box-shadow: 0 0 0 3px rgba(15, 44, 78, 0.1); border-color: var(--primary-color); }
+        
+        /* 區塊標題 */
+        .section-label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 5px;
+        }
+        .section-label i { margin-right: 8px; color: var(--accent-color); }
+
+        /* 參考標籤 */
+        .ref-badge { font-size: 0.75rem; color: #666; background-color: #fff3cd; padding: 4px 10px; border-radius: 20px; border: 1px solid #ffecb5; margin-top: 8px; display: inline-block; }
+        
+        /* 底部按鈕區 (手機版固定底部) */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 為了不被底部按鈕擋住 */
+        .container { padding-bottom: 80px; }
+
         #print-report-container { display: none; }
 
-        /* === 列印專用樣式 (A4 Landscape - 強制單頁) === */
+        /* === 列印專用樣式 (A4 Landscape - 維持原本的高質感) === */
         @media print {
             @page { size: A4 landscape; margin: 0; }
             
@@ -42,7 +95,8 @@
                 overflow: hidden;
             }
             
-            .web-interface, .no-print, .btn, .input-group-text { display: none !important; }
+            .web-interface, .no-print, .btn, .bottom-action-bar { display: none !important; }
+            .container { padding-bottom: 0; }
             
             #print-report-container { 
                 display: flex;
@@ -192,131 +246,143 @@
 </head>
 <body>
 
-<div class="container py-4 web-interface">
-    <div class="web-header text-center">
-        <h2><i class="bi bi-file-earmark-check"></i> Retire in REAL 退休規劃</h2>
-        <p class="mb-0">單頁警示版：包含拖延代價百分比分析</p>
-    </div>
-
-    <div class="card p-3 shadow-sm mb-4 border-primary">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h5 class="mb-1 fw-bold text-primary">生成報告</h5>
-                <small class="text-muted">請確認列印設定為 <b>「橫向 (Landscape)」</b></small>
-            </div>
-            <div class="d-flex gap-2">
-                <button onclick="resetForm()" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-counterclockwise"></i> 清除重填
-                </button>
-                <button onclick="window.print()" class="btn btn-primary shadow">
-                    <i class="bi bi-printer-fill"></i> 列印 / 下載 PDF
-                </button>
-            </div>
-        </div>
-        <div class="mt-2 text-end text-muted small">
-            <i class="bi bi-exclamation-circle"></i> 提示：務必勾選 <b>「背景圖形」</b>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="web-view-card p-4">
-                <h5 class="text-secondary border-bottom pb-2 mb-3">輸入參數設定</h5>
-                
-                <form id="calcForm" autocomplete="off">
-                    
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-3">
-                            <label class="form-label small">姓名</label>
-                            <input type="text" class="form-control" id="userName" placeholder="請輸入姓名" value="" autocomplete="off">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small">性別</label>
-                            <select class="form-select" id="userGender">
-                                <option value="F">女</option>
-                                <option value="M">男</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label small">生日</label>
-                            <input type="date" class="form-control" id="birthDate" value="" autocomplete="off">
-                        </div>
-                         <div class="col-md-2">
-                            <label class="form-label small">保險年齡</label>
-                            <input type="text" class="form-control bg-light" id="currentAge" readonly placeholder="--" value="">
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mb-3 bg-light p-3 rounded mx-0">
-                        <div class="col-md-4">
-                            <label class="form-label small">預計退休年齡</label>
-                            <input type="number" class="form-control" id="retireAge" placeholder="例如: 60" value="" autocomplete="off">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small">預期壽命</label>
-                            <input type="number" class="form-control" id="lifeAge" placeholder="例如: 85" value="" autocomplete="off">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small">預估通膨率 (%)</label>
-                            <input type="number" class="form-control" id="inflation" placeholder="例如: 2.0" step="0.1" value="" autocomplete="off">
-                            <div class="ref-badge">
-                                <i class="bi bi-graph-up-arrow"></i> 參考：主計總處近30年平均CPI約 1.74%
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold">退休後每月開銷 (現值)</label>
-                            <div class="input-group">
-                                <span class="input-group-text">基本</span>
-                                <input type="number" class="form-control" id="basicExp" placeholder="基本生活費" value="" autocomplete="off">
-                                <span class="input-group-text">享樂</span>
-                                <input type="number" class="form-control" id="funExp" placeholder="娛樂旅遊費" value="" autocomplete="off">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold">現有已備資產</label>
-                            <input type="number" class="form-control" id="currentAssets" placeholder="目前存款與投資總額" value="" autocomplete="off">
-                        </div>
-                    </div>
-
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <div class="card bg-white border">
-                                <div class="card-body py-2">
-                                    <h6 class="card-title small fw-bold text-primary">勞保年金試算</h6>
-                                    <div class="row g-2">
-                                        <div class="col-4">
-                                            <label class="small text-muted">平均投保薪資</label>
-                                            <input type="number" class="form-control form-control-sm" id="liSalary" placeholder="例如: 45800" value="" autocomplete="off">
-                                        </div>
-                                        <div class="col-4">
-                                            <label class="small text-muted">年資</label>
-                                            <input type="number" class="form-control form-control-sm" id="liYears" placeholder="例如: 30" value="" autocomplete="off">
-                                        </div>
-                                        <div class="col-4">
-                                            <label class="small text-muted">風險打折 (%)</label>
-                                            <input type="number" class="form-control form-control-sm" id="pensionRate" placeholder="例如: 70" value="" autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 text-end">
-                                        <small class="text-muted me-2">系統擇優計算：</small>
-                                        <span class="fw-bold text-success fs-5" id="web_pension_disp">--</span>
-                                        <input type="hidden" id="govPensionMonthly">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="web-header text-center web-interface">
+    <h3 class="fw-bold mb-1"><i class="bi bi-calculator"></i> Retire in REAL</h3>
+    <p class="mb-0 small opacity-75">退休規劃 v5.7</p>
 </div>
 
-<div id="print-report-container">
+<div class="container web-interface">
     
+    <form id="calcForm" autocomplete="off">
+        
+        <div class="web-view-card">
+            <div class="section-label"><i class="bi bi-person-vcard"></i> 基本資料</div>
+            <div class="row g-2">
+                <div class="col-7">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="userName" placeholder="姓名" autocomplete="off">
+                        <label for="userName">姓名</label>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="form-floating">
+                        <select class="form-select" id="userGender">
+                            <option value="F">女</option>
+                            <option value="M">男</option>
+                        </select>
+                        <label for="userGender">性別</label>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="birthDate" placeholder="生日" autocomplete="off">
+                        <label for="birthDate">出生年月日</label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control bg-light" id="currentAge" placeholder="--" readonly>
+                        <label>保險年齡</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="web-view-card">
+            <div class="section-label"><i class="bi bi-clock-history"></i> 退休時程設定</div>
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="retireAge" placeholder="60" autocomplete="off">
+                        <label>預計退休 (歲)</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="lifeAge" placeholder="85" autocomplete="off">
+                        <label>預期壽命 (歲)</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="inflation" placeholder="2.0" step="0.1" autocomplete="off">
+                        <label>預估通膨率 (%)</label>
+                    </div>
+                    <div class="text-end">
+                        <span class="ref-badge"><i class="bi bi-info-circle"></i> 近30年平均CPI約 1.74%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="web-view-card">
+            <div class="section-label"><i class="bi bi-currency-dollar"></i> 財務與開支</div>
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="basicExp" placeholder="30000" autocomplete="off">
+                        <label>基本開銷/月</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="funExp" placeholder="10000" autocomplete="off">
+                        <label>享樂開銷/月</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="currentAssets" placeholder="5000000" autocomplete="off">
+                        <label>現有已備資產 (存款/投資)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="web-view-card">
+            <div class="section-label"><i class="bi bi-bank"></i> 勞保年金試算</div>
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="liSalary" placeholder="45800" autocomplete="off">
+                        <label>投保薪資</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="liYears" placeholder="30" autocomplete="off">
+                        <label>投保年資</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="pensionRate" placeholder="70" autocomplete="off">
+                        <label>政策風險打折 (例如輸入70代表領7成)</label>
+                    </div>
+                </div>
+                <div class="col-12 mt-2">
+                    <div class="alert alert-light border d-flex justify-content-between align-items-center mb-0 p-2">
+                        <span class="small text-muted">試算結果 (擇優)</span>
+                        <span class="fw-bold text-success fs-5" id="web_pension_disp">--</span>
+                        <input type="hidden" id="govPensionMonthly">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="bottom-action-bar web-interface">
+    <button onclick="resetForm()" class="btn btn-outline-secondary" style="flex:1">
+        <i class="bi bi-arrow-counterclockwise"></i> 重填
+    </button>
+    <button onclick="handlePrint()" class="btn btn-primary fw-bold shadow" style="flex:2">
+        <i class="bi bi-file-earmark-pdf-fill"></i> 產出報告
+    </button>
+</div>
+
+
+<div id="print-report-container">
     <div class="report-header">
         <div>
             <h1 class="report-title">RETIREMENT ROADMAP</h1>
@@ -327,9 +393,7 @@
             <div class="report-meta">Date: <span id="rpt_date">--</span></div>
         </div>
     </div>
-
     <div class="report-content-wrapper">
-        
         <div class="rpt-col">
             <div class="rpt-card" style="flex:1">
                 <div class="rpt-card-header"><i class="bi bi-person-bounding-box"></i> 規劃參數</div>
@@ -353,63 +417,34 @@
                 </div>
             </div>
         </div>
-
         <div class="rpt-col middle">
             <div class="rpt-card">
                 <div class="rpt-card-header"><i class="bi bi-graph-up-arrow"></i> 退休需求 (Needs)</div>
                 <table class="fin-table">
-                    <tr>
-                        <td class="fin-label">每月基本生活 (現值)</td>
-                        <td class="fin-val" id="rpt_basicExp">--</td>
-                    </tr>
-                    <tr>
-                        <td class="fin-label">每月享樂生活 (現值)</td>
-                        <td class="fin-val" id="rpt_funExp">--</td>
-                    </tr>
-                    <tr style="background:#fcfcfc">
-                        <td class="fin-label" style="font-weight:bold">每月總需求 (現值)</td>
-                        <td class="fin-val" id="rpt_monthlyTotal" style="font-weight:bold">--</td>
-                    </tr>
+                    <tr><td class="fin-label">每月基本生活 (現值)</td><td class="fin-val" id="rpt_basicExp">--</td></tr>
+                    <tr><td class="fin-label">每月享樂生活 (現值)</td><td class="fin-val" id="rpt_funExp">--</td></tr>
+                    <tr style="background:#fcfcfc"><td class="fin-label" style="font-weight:bold">每月總需求 (現值)</td><td class="fin-val" id="rpt_monthlyTotal" style="font-weight:bold">--</td></tr>
                     <tr><td colspan="2" style="text-align:center; color:#999; font-size:8pt; padding:4px;">↓ 經過 <span id="rpt_prepYears_s">--</span> 年通膨複利 ↓</td></tr>
-                    <tr>
-                        <td class="fin-label">退休首月所需 (未來值)</td>
-                        <td class="fin-val text-danger" id="rpt_futureMonthly">--</td>
-                    </tr>
-                    <tr class="fin-total">
-                        <td>退休總應備金額 (A)</td>
-                        <td class="fin-val" id="rpt_inflatedTotal">--</td>
-                    </tr>
+                    <tr><td class="fin-label">退休首月所需 (未來值)</td><td class="fin-val text-danger" id="rpt_futureMonthly">--</td></tr>
+                    <tr class="fin-total"><td>退休總應備金額 (A)</td><td class="fin-val" id="rpt_inflatedTotal">--</td></tr>
                 </table>
             </div>
-
             <div class="rpt-card">
                 <div class="rpt-card-header"><i class="bi bi-wallet2"></i> 資產供給 (Supply)</div>
                 <table class="fin-table">
-                    <tr>
-                        <td class="fin-label">現有已備資產</td>
-                        <td class="fin-val" id="rpt_assets">--</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="padding-top:10px; padding-bottom:4px;">
-                            <div style="font-size:9pt; font-weight:bold; color:#0f2c4e;">預估勞保年金 (擇優後)</div>
-                            <div style="display:flex; justify-content:space-between; font-size:9pt; color:#666; border-left:3px solid #ddd; padding-left:10px; background:#fafafa; margin-top:2px;">
-                                <span>A式(保證): <span id="rpt_formulaA"></span></span>
-                                <span>B式(年資): <span id="rpt_formulaB"></span></span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fin-label">每月可領 (風險打折 <span id="rpt_riskRate"></span>%)</td>
-                        <td class="fin-val" id="rpt_realPensionMonthly">--</td>
-                    </tr>
-                    <tr class="fin-total">
-                        <td>資產與年金總現值 (B)</td>
-                        <td class="fin-val" id="rpt_pensionTotal">--</td>
-                    </tr>
+                    <tr><td class="fin-label">現有已備資產</td><td class="fin-val" id="rpt_assets">--</td></tr>
+                    <tr><td colspan="2" style="padding-top:10px; padding-bottom:4px;">
+                        <div style="font-size:9pt; font-weight:bold; color:#0f2c4e;">預估勞保年金 (擇優後)</div>
+                        <div style="display:flex; justify-content:space-between; font-size:9pt; color:#666; border-left:3px solid #ddd; padding-left:10px; background:#fafafa; margin-top:2px;">
+                            <span>A式(保證): <span id="rpt_formulaA"></span></span>
+                            <span>B式(年資): <span id="rpt_formulaB"></span></span>
+                        </div>
+                    </td></tr>
+                    <tr><td class="fin-label">每月可領 (風險打折 <span id="rpt_riskRate"></span>%)</td><td class="fin-val" id="rpt_realPensionMonthly">--</td></tr>
+                    <tr class="fin-total"><td>資產與年金總現值 (B)</td><td class="fin-val" id="rpt_pensionTotal">--</td></tr>
                 </table>
             </div>
         </div>
-
         <div class="rpt-col">
             <div class="rpt-card">
                 <div class="rpt-card-header"><i class="bi bi-bullseye"></i> 最終結論 (Conclusion)</div>
@@ -419,52 +454,25 @@
                     <div class="gap-msg" id="rpt_gapMsg">計算中...</div>
                 </div>
             </div>
-
             <div class="rpt-card delay-card" id="rpt_delay_section" style="display:none;">
                 <div class="rpt-card-header" style="color:#dc3545"><i class="bi bi-alarm"></i> 拖延代價分析</div>
                 <div style="font-size:9pt; margin-bottom:5px; text-align:center;">
                     若現在開始，每年需存：<br>
                     <span id="rpt_yearlySave" style="font-size:14pt; font-weight:bold; color:#0f2c4e; border-bottom:2px solid #c5a065">--</span> 元
                 </div>
-                
                 <table class="delay-table">
-                    <thead>
-                        <tr>
-                            <th>延後</th>
-                            <th>年儲蓄額</th>
-                            <th>增加金額</th>
-                            <th>增加比例</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>延後</th><th>年儲蓄額</th><th>增加金額</th><th>增加比例</th></tr></thead>
                     <tbody>
-                        <tr>
-                            <td>1年</td>
-                            <td id="d_amt_1">--</td>
-                            <td class="inc-text" id="d_inc_1">--</td>
-                            <td class="inc-text" id="d_pct_1">--</td>
-                        </tr>
-                        <tr>
-                            <td>2年</td>
-                            <td id="d_amt_2">--</td>
-                            <td class="inc-text" id="d_inc_2">--</td>
-                            <td class="inc-text" id="d_pct_2">--</td>
-                        </tr>
-                        <tr>
-                            <td>3年</td>
-                            <td id="d_amt_3">--</td>
-                            <td class="inc-text" id="d_inc_3">--</td>
-                            <td class="inc-text" id="d_pct_3">--</td>
-                        </tr>
+                        <tr><td>1年</td><td id="d_amt_1">--</td><td class="inc-text" id="d_inc_1">--</td><td class="inc-text" id="d_pct_1">--</td></tr>
+                        <tr><td>2年</td><td id="d_amt_2">--</td><td class="inc-text" id="d_inc_2">--</td><td class="inc-text" id="d_pct_2">--</td></tr>
+                        <tr><td>3年</td><td id="d_amt_3">--</td><td class="inc-text" id="d_inc_3">--</td><td class="inc-text" id="d_pct_3">--</td></tr>
                     </tbody>
                 </table>
                 <div style="font-size:8pt; color:#888; margin-top:auto; text-align:center;">*時間是投資最大的槓桿</div>
             </div>
         </div>
     </div>
-
-    <div class="report-footer">
-        <div>本報告僅供參考</div>
-    </div>
+    <div class="report-footer"><div>本報告僅供參考</div></div>
 </div>
 
 <script>
@@ -477,10 +485,25 @@
         return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    // 重設表單功能
     function resetForm() {
-        document.getElementById('calcForm').reset();
-        calculate(); // 重置後重新計算(清空顯示)
+        if(confirm('確定要清空所有資料重新填寫嗎？')) {
+            document.getElementById('calcForm').reset();
+            calculate();
+        }
+    }
+
+    // === 手機列印處理 ===
+    function handlePrint() {
+        // 偵測是否為 App 內建瀏覽器 (FB/Line/Instagram)
+        var ua = navigator.userAgent || navigator.vendor || window.opera;
+        var isInApp = (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1) || (ua.indexOf("Line") > -1) || (ua.indexOf("Instagram") > -1);
+
+        if (isInApp) {
+            alert("⚠️ 偵測到您正在使用 App 內建瀏覽器（如 Line/FB），可能無法正常下載 PDF。\n\n請點擊右上角選單，選擇「使用預設瀏覽器開啟」或「在 Chrome/Safari 中開啟」，即可正常產出報告！");
+        } else {
+            // 一般瀏覽器直接列印
+            window.print();
+        }
     }
 
     function calcAge() {
@@ -490,10 +513,8 @@
         const now = new Date();
         let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
         if(now.getDate() < birth.getDate()) months--;
-        
         let age = Math.floor(months / 12);
         if(months % 12 >= 6) age++;
-        
         document.getElementById('currentAge').value = age;
         return age;
     }
@@ -501,14 +522,11 @@
     function calcLabor() {
         const salary = parseFloat(document.getElementById('liSalary').value) || 0;
         const years = parseFloat(document.getElementById('liYears').value) || 0;
-        
         const valA = (years * salary * 0.00775) + 3000;
         const valB = (years * salary * 0.0155);
         const winner = Math.max(valA, valB);
-        
         document.getElementById('govPensionMonthly').value = winner;
         document.getElementById('web_pension_disp').innerText = fmt(winner);
-        
         document.getElementById('rpt_formulaA').innerText = fmt(valA);
         document.getElementById('rpt_formulaB').innerText = fmt(valB);
         return winner;
@@ -521,7 +539,6 @@
         const age = calcAge();
         const liMonthly = calcLabor();
 
-        // 讀取數值，若為空則設為0，避免 NaN
         const retireAge = parseFloat(document.getElementById('retireAge').value) || 0;
         const lifeAge = parseFloat(document.getElementById('lifeAge').value) || 0;
         const inflation = parseFloat(document.getElementById('inflation').value) || 0;
@@ -532,7 +549,6 @@
 
         let yearsToPrep = 0;
         let yearsInRetire = 0;
-        
         if (retireAge > 0 && age > 0) yearsToPrep = Math.max(0, retireAge - age);
         if (lifeAge > 0 && retireAge > 0) yearsInRetire = Math.max(0, lifeAge - retireAge);
 
@@ -548,7 +564,6 @@
         const monthlyTotal = basicExp + funExp;
         const inflationRate = inflation / 100;
         const inflationFactor = Math.pow(1 + inflationRate, yearsToPrep);
-        
         const futureMonthly = monthlyTotal * inflationFactor;
         const inflatedTotal = (monthlyTotal * 12 * yearsInRetire) * inflationFactor;
 
@@ -571,18 +586,15 @@
         const gapMsg = document.getElementById('rpt_gapMsg');
         const delaySection = document.getElementById('rpt_delay_section');
 
-        // 僅當有有效計算結果時才顯示分析
         if (yearsInRetire > 0 && monthlyTotal > 0) {
             if (gap > 0) {
                 gapEl.innerText = "- " + fmt(gap);
                 gapEl.style.color = "#dc3545";
                 gapMsg.innerText = "尚有資金缺口，建議儘早執行儲蓄計畫";
                 gapMsg.style.color = "#dc3545";
-                
                 let baseYearlySave = 0;
                 if(yearsToPrep > 0) baseYearlySave = gap / yearsToPrep;
                 else baseYearlySave = gap;
-                
                 document.getElementById('rpt_yearlySave').innerText = fmt(baseYearlySave);
                 
                 if(yearsToPrep > 3) {
@@ -592,7 +604,6 @@
                         const newSave = gap / remain;
                         const inc = newSave - baseYearlySave;
                         const pct = (inc / baseYearlySave) * 100;
-                        
                         document.getElementById(`d_amt_${i}`).innerText = fmt(newSave);
                         document.getElementById(`d_inc_${i}`).innerText = "+" + fmt(inc);
                         document.getElementById(`d_pct_${i}`).innerText = "+" + pct.toFixed(1) + "%";
@@ -600,7 +611,6 @@
                 } else {
                     delaySection.style.display = 'none';
                 }
-
             } else {
                 gapEl.innerText = "+ " + fmt(Math.abs(gap));
                 gapEl.style.color = "#198754";
@@ -609,7 +619,6 @@
                 delaySection.style.display = 'none';
             }
         } else {
-            // 資料不足時的預設狀態
             gapEl.innerText = "--";
             gapMsg.innerText = "請輸入完整資料";
             gapEl.style.color = "#333";
@@ -622,9 +631,7 @@
         el.addEventListener('input', calculate);
         el.addEventListener('change', calculate);
     });
-
     calculate();
 </script>
-
 </body>
 </html>
