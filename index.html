@@ -185,7 +185,7 @@
                 font-size: 8pt;
                 color: #999;
                 display: flex;
-                justify-content: flex-end; /* 靠右對齊 */
+                justify-content: flex-end; 
             }
         }
     </style>
@@ -221,37 +221,37 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-3">
                             <label class="form-label small">姓名</label>
-                            <input type="text" class="form-control" id="userName" value="錢虹樺">
+                            <input type="text" class="form-control" id="userName" placeholder="請輸入姓名">
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small">性別</label>
                             <select class="form-select" id="userGender">
-                                <option value="F">女</option>
+                                <option value="F" selected>女</option>
                                 <option value="M">男</option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small">生日</label>
-                            <input type="date" class="form-control" id="birthDate" value="1994-06-07">
+                            <input type="date" class="form-control" id="birthDate">
                         </div>
                          <div class="col-md-2">
                             <label class="form-label small">保險年齡</label>
-                            <input type="text" class="form-control bg-light" id="currentAge" readonly>
+                            <input type="text" class="form-control bg-light" id="currentAge" readonly placeholder="--">
                         </div>
                     </div>
 
                     <div class="row g-3 mb-3 bg-light p-3 rounded mx-0">
                         <div class="col-md-4">
                             <label class="form-label small">預計退休年齡</label>
-                            <input type="number" class="form-control" id="retireAge" value="60">
+                            <input type="number" class="form-control" id="retireAge" placeholder="例如: 60">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small">預期壽命</label>
-                            <input type="number" class="form-control" id="lifeAge" value="83">
+                            <input type="number" class="form-control" id="lifeAge" placeholder="例如: 85">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small">預估通膨率 (%)</label>
-                            <input type="number" class="form-control" id="inflation" value="2.0" step="0.1">
+                            <input type="number" class="form-control" id="inflation" placeholder="例如: 2.0" step="0.1">
                             <div class="ref-badge">
                                 <i class="bi bi-graph-up-arrow"></i> 參考：主計總處近30年平均CPI約 1.74%
                             </div>
@@ -263,14 +263,14 @@
                             <label class="form-label small fw-bold">退休後每月開銷 (現值)</label>
                             <div class="input-group">
                                 <span class="input-group-text">基本</span>
-                                <input type="number" class="form-control" id="basicExp" value="30000">
+                                <input type="number" class="form-control" id="basicExp" placeholder="基本生活費">
                                 <span class="input-group-text">享樂</span>
-                                <input type="number" class="form-control" id="funExp" value="10000">
+                                <input type="number" class="form-control" id="funExp" placeholder="娛樂旅遊費">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">現有已備資產</label>
-                            <input type="number" class="form-control" id="currentAssets" value="5000000">
+                            <input type="number" class="form-control" id="currentAssets" placeholder="目前存款與投資總額">
                         </div>
                     </div>
 
@@ -282,15 +282,15 @@
                                     <div class="row g-2">
                                         <div class="col-4">
                                             <label class="small text-muted">平均投保薪資</label>
-                                            <input type="number" class="form-control form-control-sm" id="liSalary" value="45800">
+                                            <input type="number" class="form-control form-control-sm" id="liSalary" placeholder="例如: 45800">
                                         </div>
                                         <div class="col-4">
                                             <label class="small text-muted">年資</label>
-                                            <input type="number" class="form-control form-control-sm" id="liYears" value="36">
+                                            <input type="number" class="form-control form-control-sm" id="liYears" placeholder="例如: 30">
                                         </div>
                                         <div class="col-4">
                                             <label class="small text-muted">風險打折 (%)</label>
-                                            <input type="number" class="form-control form-control-sm" id="pensionRate" value="40">
+                                            <input type="number" class="form-control form-control-sm" id="pensionRate" placeholder="例如: 70">
                                         </div>
                                     </div>
                                     <div class="mt-2 text-end">
@@ -466,6 +466,7 @@
     document.getElementById('rpt_date').innerText = today;
 
     function fmt(num) {
+        if (!num && num !== 0) return "--";
         return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
@@ -501,28 +502,32 @@
     }
 
     function calculate() {
-        document.getElementById('rpt_name').innerText = document.getElementById('userName').value;
+        document.getElementById('rpt_name').innerText = document.getElementById('userName').value || "--";
         document.getElementById('rpt_gender').innerText = document.getElementById('userGender').value === 'F' ? '女士' : '先生';
         
         const age = calcAge();
         const liMonthly = calcLabor();
 
-        const retireAge = parseFloat(document.getElementById('retireAge').value);
-        const lifeAge = parseFloat(document.getElementById('lifeAge').value);
-        const inflation = parseFloat(document.getElementById('inflation').value);
-        const basicExp = parseFloat(document.getElementById('basicExp').value);
-        const funExp = parseFloat(document.getElementById('funExp').value);
-        const assets = parseFloat(document.getElementById('currentAssets').value);
-        const riskRate = parseFloat(document.getElementById('pensionRate').value);
+        // 讀取數值，若為空則設為0，避免 NaN
+        const retireAge = parseFloat(document.getElementById('retireAge').value) || 0;
+        const lifeAge = parseFloat(document.getElementById('lifeAge').value) || 0;
+        const inflation = parseFloat(document.getElementById('inflation').value) || 0;
+        const basicExp = parseFloat(document.getElementById('basicExp').value) || 0;
+        const funExp = parseFloat(document.getElementById('funExp').value) || 0;
+        const assets = parseFloat(document.getElementById('currentAssets').value) || 0;
+        const riskRate = parseFloat(document.getElementById('pensionRate').value) || 0;
 
-        const yearsToPrep = retireAge - age;
-        const yearsInRetire = lifeAge - retireAge;
+        let yearsToPrep = 0;
+        let yearsInRetire = 0;
+        
+        if (retireAge > 0 && age > 0) yearsToPrep = Math.max(0, retireAge - age);
+        if (lifeAge > 0 && retireAge > 0) yearsInRetire = Math.max(0, lifeAge - retireAge);
 
         document.getElementById('rpt_age').innerText = age;
         document.getElementById('rpt_retireAge').innerText = retireAge;
         document.getElementById('rpt_lifeAge').innerText = lifeAge;
-        document.getElementById('rpt_prepYears').innerText = yearsToPrep > 0 ? yearsToPrep : 0;
-        document.getElementById('rpt_prepYears_s').innerText = yearsToPrep > 0 ? yearsToPrep : 0;
+        document.getElementById('rpt_prepYears').innerText = yearsToPrep;
+        document.getElementById('rpt_prepYears_s').innerText = yearsToPrep;
         document.getElementById('rpt_retireYears').innerText = yearsInRetire;
         document.getElementById('rpt_inflation').innerText = inflation;
         document.getElementById('rpt_riskRate').innerText = riskRate;
@@ -553,36 +558,49 @@
         const gapMsg = document.getElementById('rpt_gapMsg');
         const delaySection = document.getElementById('rpt_delay_section');
 
-        if (gap > 0) {
-            gapEl.innerText = "- " + fmt(gap);
-            gapEl.style.color = "#dc3545";
-            gapMsg.innerText = "尚有資金缺口，建議儘早執行儲蓄計畫";
-            gapMsg.style.color = "#dc3545";
-            
-            const baseYearlySave = yearsToPrep > 0 ? gap / yearsToPrep : gap;
-            document.getElementById('rpt_yearlySave').innerText = fmt(baseYearlySave);
-            
-            if(yearsToPrep > 3) {
-                delaySection.style.display = 'flex';
-                for(let i=1; i<=3; i++) {
-                    const remain = yearsToPrep - i;
-                    const newSave = gap / remain;
-                    const inc = newSave - baseYearlySave;
-                    const pct = (inc / baseYearlySave) * 100;
-                    
-                    document.getElementById(`d_amt_${i}`).innerText = fmt(newSave);
-                    document.getElementById(`d_inc_${i}`).innerText = "+" + fmt(inc);
-                    document.getElementById(`d_pct_${i}`).innerText = "+" + pct.toFixed(1) + "%";
+        // 僅當有有效計算結果時才顯示分析
+        if (yearsInRetire > 0 && monthlyTotal > 0) {
+            if (gap > 0) {
+                gapEl.innerText = "- " + fmt(gap);
+                gapEl.style.color = "#dc3545";
+                gapMsg.innerText = "尚有資金缺口，建議儘早執行儲蓄計畫";
+                gapMsg.style.color = "#dc3545";
+                
+                let baseYearlySave = 0;
+                if(yearsToPrep > 0) baseYearlySave = gap / yearsToPrep;
+                else baseYearlySave = gap; // 若已過退休年齡，需立即補足
+                
+                document.getElementById('rpt_yearlySave').innerText = fmt(baseYearlySave);
+                
+                if(yearsToPrep > 3) {
+                    delaySection.style.display = 'flex';
+                    for(let i=1; i<=3; i++) {
+                        const remain = yearsToPrep - i;
+                        const newSave = gap / remain;
+                        const inc = newSave - baseYearlySave;
+                        const pct = (inc / baseYearlySave) * 100;
+                        
+                        document.getElementById(`d_amt_${i}`).innerText = fmt(newSave);
+                        document.getElementById(`d_inc_${i}`).innerText = "+" + fmt(inc);
+                        document.getElementById(`d_pct_${i}`).innerText = "+" + pct.toFixed(1) + "%";
+                    }
+                } else {
+                    delaySection.style.display = 'none';
                 }
+
             } else {
+                gapEl.innerText = "+ " + fmt(Math.abs(gap));
+                gapEl.style.color = "#198754";
+                gapMsg.innerText = "恭喜！資產配置已足以應付退休需求";
+                gapMsg.style.color = "#198754";
                 delaySection.style.display = 'none';
             }
-
         } else {
-            gapEl.innerText = "+ " + fmt(Math.abs(gap));
-            gapEl.style.color = "#198754";
-            gapMsg.innerText = "恭喜！資產配置已足以應付退休需求";
-            gapMsg.style.color = "#198754";
+            // 資料不足時的預設狀態
+            gapEl.innerText = "--";
+            gapMsg.innerText = "請輸入完整資料";
+            gapEl.style.color = "#333";
+            gapMsg.style.color = "#666";
             delaySection.style.display = 'none';
         }
     }
