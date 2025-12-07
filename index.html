@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Retire in REAL - 退休規劃 (手機優化版)</title>
+    <title>Retire in REAL - 退休規劃 (V5.8)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
@@ -29,7 +29,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        /* 卡片優化 */
         .web-view-card { 
             border: none; 
             border-radius: 16px; 
@@ -39,13 +38,12 @@
             padding: 20px;
         }
 
-        /* 浮動標籤樣式優化 (解決高低不一) */
+        /* 浮動標籤樣式優化 */
         .form-floating > .form-control { height: 60px; border-radius: 8px; border: 1px solid #e0e0e0; }
         .form-floating > .form-select { height: 60px; border-radius: 8px; border: 1px solid #e0e0e0; }
         .form-floating > label { padding-top: 0.8rem; font-size: 0.9rem; color: #888; }
         .form-control:focus { box-shadow: 0 0 0 3px rgba(15, 44, 78, 0.1); border-color: var(--primary-color); }
         
-        /* 區塊標題 */
         .section-label {
             font-size: 0.9rem;
             font-weight: bold;
@@ -59,9 +57,17 @@
         .section-label i { margin-right: 8px; color: var(--accent-color); }
 
         /* 參考標籤 */
-        .ref-badge { font-size: 0.75rem; color: #666; background-color: #fff3cd; padding: 4px 10px; border-radius: 20px; border: 1px solid #ffecb5; margin-top: 8px; display: inline-block; }
+        .ref-badge { 
+            font-size: 0.75rem; 
+            color: #666; 
+            background-color: #fff3cd; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            border: 1px solid #ffecb5; 
+            margin-top: 5px; 
+            display: inline-block; 
+        }
         
-        /* 底部按鈕區 (手機版固定底部) */
         .bottom-action-bar {
             position: fixed;
             bottom: 0;
@@ -75,12 +81,10 @@
             gap: 10px;
         }
 
-        /* 為了不被底部按鈕擋住 */
         .container { padding-bottom: 80px; }
-
         #print-report-container { display: none; }
 
-        /* === 列印專用樣式 (A4 Landscape - 維持原本的高質感) === */
+        /* === 列印專用樣式 (A4 Landscape) === */
         @media print {
             @page { size: A4 landscape; margin: 0; }
             
@@ -108,7 +112,6 @@
                 background: white;
             }
 
-            /* 頁首 */
             .report-header { 
                 flex: 0 0 auto;
                 display: flex; 
@@ -130,7 +133,6 @@
             .client-name { font-size: 14pt; font-weight: bold; color: var(--primary-color); line-height: 1.2; }
             .report-meta { font-size: 9pt; color: #888; margin-top: 2px; }
 
-            /* 主內容區 Grid */
             .report-content-wrapper {
                 flex: 1 1 auto;
                 display: grid;
@@ -171,7 +173,6 @@
             }
             .rpt-card-header i { margin-right: 8px; color: var(--accent-color); }
 
-            /* 左欄 KPI */
             .kpi-box { 
                 background-color: var(--light-bg); 
                 text-align: center; 
@@ -187,7 +188,6 @@
             .kpi-num { font-size: 20pt; font-weight: 900; color: var(--primary-color); line-height: 1.2; margin: 2px 0; }
             .kpi-desc { font-size: 8pt; color: #888; }
 
-            /* 中欄 表格 */
             .fin-table { width: 100%; font-size: 10pt; border-collapse: collapse; height: 100%; }
             .fin-table td { 
                 padding: 6px 8px;
@@ -205,7 +205,6 @@
             }
             .fin-total td { padding: 10px 8px; font-size: 11pt; }
             
-            /* 右欄 缺口 */
             .gap-box {
                 background: linear-gradient(135deg, #fffcf5 0%, #fff 100%);
                 border: 1px solid var(--accent-color);
@@ -219,7 +218,6 @@
             .gap-number { font-size: 32pt; font-weight: 900; color: #dc3545; font-family: 'Noto Serif TC', serif; margin: 0; line-height: 1.1; }
             .gap-msg { font-size: 9pt; font-weight: bold; color: #555; margin-top: 5px; }
             
-            /* 拖延表格 */
             .delay-card {
                 flex: 1;
                 display: flex;
@@ -230,7 +228,6 @@
             .delay-table td { border-bottom: 1px solid #eee; padding: 8px 2px; text-align: center; }
             .inc-text { color: #dc3545; font-weight: bold; }
 
-            /* 頁尾 - 靠右顯示 */
             .report-footer {
                 flex: 0 0 auto;
                 border-top: 1px solid #ddd;
@@ -248,11 +245,10 @@
 
 <div class="web-header text-center web-interface">
     <h3 class="fw-bold mb-1"><i class="bi bi-calculator"></i> Retire in REAL</h3>
-    <p class="mb-0 small opacity-75">退休規劃 v5.7</p>
+    <p class="mb-0 small opacity-75">退休規劃 v5.8</p>
 </div>
 
 <div class="container web-interface">
-    
     <form id="calcForm" autocomplete="off">
         
         <div class="web-view-card">
@@ -303,13 +299,18 @@
                         <label>預期壽命 (歲)</label>
                     </div>
                 </div>
-                <div class="col-12">
+                
+                <div class="col-12 text-end mt-0">
+                    <span class="ref-badge"><i class="bi bi-info-circle"></i> 113年平均壽命：男 77.42歲 / 女 84.30歲</span>
+                </div>
+
+                <div class="col-12 mt-2">
                     <div class="form-floating">
                         <input type="number" class="form-control" id="inflation" placeholder="2.0" step="0.1" autocomplete="off">
                         <label>預估通膨率 (%)</label>
                     </div>
                     <div class="text-end">
-                        <span class="ref-badge"><i class="bi bi-info-circle"></i> 近30年平均CPI約 1.74%</span>
+                        <span class="ref-badge"><i class="bi bi-graph-up-arrow"></i> 近30年平均CPI約 1.74%</span>
                     </div>
                 </div>
             </div>
@@ -381,7 +382,6 @@
     </button>
 </div>
 
-
 <div id="print-report-container">
     <div class="report-header">
         <div>
@@ -413,7 +413,8 @@
                     <div class="kpi-desc">複利效應因子</div>
                 </div>
                 <div style="font-size:8pt; color:#999; margin-top:10px; padding:0 5px; line-height:1.4;">
-                    <i class="bi bi-info-circle"></i> 通膨參考：<br>主計總處近30年平均CPI約 1.74%
+                    <i class="bi bi-info-circle"></i> 通膨參考：<br>主計總處近30年平均CPI約 1.74%<br>
+                    <i class="bi bi-person"></i> 113年平均壽命：男77.42 / 女84.30
                 </div>
             </div>
         </div>
@@ -476,7 +477,6 @@
 </div>
 
 <script>
-    // === 核心計算邏輯 ===
     const today = new Date().toLocaleDateString();
     document.getElementById('rpt_date').innerText = today;
 
@@ -492,16 +492,13 @@
         }
     }
 
-    // === 手機列印處理 ===
     function handlePrint() {
-        // 偵測是否為 App 內建瀏覽器 (FB/Line/Instagram)
         var ua = navigator.userAgent || navigator.vendor || window.opera;
         var isInApp = (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1) || (ua.indexOf("Line") > -1) || (ua.indexOf("Instagram") > -1);
 
         if (isInApp) {
             alert("⚠️ 偵測到您正在使用 App 內建瀏覽器（如 Line/FB），可能無法正常下載 PDF。\n\n請點擊右上角選單，選擇「使用預設瀏覽器開啟」或「在 Chrome/Safari 中開啟」，即可正常產出報告！");
         } else {
-            // 一般瀏覽器直接列印
             window.print();
         }
     }
